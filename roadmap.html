@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andrew's $5K/Month Roadmap 🚀</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(20, 20, 30, 0.6);
+            --bg-card-hover: rgba(30, 30, 45, 0.7);
+            --neon-purple: #a855f7;
+            --neon-blue: #3b82f6;
+            --neon-green: #10b981;
+            --neon-pink: #ec4899;
+            --neon-orange: #f97316;
+            --neon-cyan: #06b6d4;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --gradient-1: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+            --gradient-2: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            --gradient-3: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
+            --gradient-glow: linear-gradient(135deg, rgba(168,85,247,0.3) 0%, rgba(59,130,246,0.3) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(168,85,247,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(236,72,153,0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a855f7, #3b82f6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .subtitle span {
+            color: var(--neon-green);
+            font-weight: 600;
+        }
+
+        /* Section styling */
+        section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+            border-color: rgba(168,85,247,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 40px rgba(168,85,247,0.1);
+        }
+
+        /* Progress Dashboard */
+        .progress-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .progress-item {
+            position: relative;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-label {
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-label .emoji {
+            font-size: 1.3rem;
+        }
+
+        .progress-amount {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .progress-track {
+            height: 12px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            position: relative;
+            width: 0;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-fill.phase-1 { background: var(--gradient-1); }
+        .progress-fill.phase-2 { background: var(--gradient-2); }
+        .progress-fill.phase-3 { background: var(--gradient-3); }
+        .progress-fill.phase-4 { 
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            box-shadow: 0 0 20px rgba(245,158,11,0.5);
+        }
+
+        .progress-percent {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        /* Status badges */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status.not-started {
+            background: rgba(100,116,139,0.2);
+            color: var(--text-muted);
+        }
+
+        .status.in-progress {
+            background: rgba(59,130,246,0.2);
+            color: var(--neon-blue);
+        }
+
+        .status.completed {
+            background: rgba(16,185,129,0.2);
+            color: var(--neon-green);
+        }
+
+        /* Milestone Map */
+        .milestone {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .milestone::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--neon-purple), var(--neon-blue), var(--neon-green), var(--neon-orange));
+            border-radius: 2px;
+        }
+
+        .milestone::after {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 28px;
+            width: 18px;
+            height: 18px;
+            background: var(--bg-dark);
+            border: 3px solid var(--neon-purple);
+            border-radius: 50%;
+        }
+
+        .milestone:nth-child(2)::after { border-color: var(--neon-blue); }
+        .milestone:nth-child(3)::after { border-color: var(--neon-green); }
+        .milestone:nth-child(4)::after { border-color: var(--neon-orange); }
+
+        .milestone-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .milestone-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .milestone-title .phase-num {
+            color: var(--neon-purple);
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .milestone:nth-child(2) .phase-num { color: var(--neon-blue); }
+        .milestone:nth-child(3) .phase-num { color: var(--neon-green); }
+        .milestone:nth-child(4) .phase-num { color: var(--neon-orange); }
+
+        .milestone-content {
+            display: grid;
+            gap: 16px;
+        }
+
+        .milestone-section h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .milestone-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .milestone-section li {
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .milestone-section li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--neon-cyan);
+        }
+
+        .timeline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--neon-cyan);
+        }
+
+        /* Next Steps */
+        .next-steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .next-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
+        }
+
+        .next-step:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: var(--neon-purple);
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .step-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Resources */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .resource-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .resource-card:hover {
+            background: rgba(255,255,255,0.06);
+            transform: translateX(6px);
+            border-color: var(--neon-blue);
+        }
+
+        .resource-icon {
+            font-size: 1.5rem;
+        }
+
+        .resource-info h4 {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .resource-info p {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer span {
+            color: var(--neon-pink);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .container { padding: 30px 16px; }
+            .card { padding: 20px; }
+            .milestone-header { flex-direction: column; }
+            .progress-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .progress-amount { font-size: 0.85rem; }
+        }
+
+        /* Animation on load */
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Andrew's $5K/Month Roadmap</h1>
+            <p class="subtitle">From zero to <span>$5,000</span> every month</p>
+        </header>
+
+        <!-- Progress Dashboard -->
+        <section>
+            <h2 class="section-title">📊 Progress Dashboard</h2>
+            
+            <div class="progress-grid">
+                <div class="card progress-item animate-in">
+                    <div class="progress-header">
+                        <span class="progress-label"><span class="emoji">🌱</span> Phase 1: First $100</span>
+                        <span class="progress-amount">$0 / $100</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill phase-1" data-progress="0"></div>
+                    </div>
+                    <div class="progress-percent">0%</div>
+                </div>
+
+                <div class="card progress-item animate-in">
+                    <div class="progress-header">
+                        <span class="progress-label"><span class="emoji">🚀</span> Phase 2: First $500</span>
+                        <span class="progress-amount">$0 / $500</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill phase-2" data-progress="0"></div>
+                    </div>
+                    <div class="progress-percent">0%</div>
+                </div>
+
+                <div class="card progress-item animate-in">
+                    <div class="progress-header">
+                        <span class="progress-label"><span class="emoji">💎</span> Phase 3: First $1,000</span>
+                        <span class="progress-amount">$0 / $1,000</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill phase-3" data-progress="0"></div>
+                    </div>
+                    <div class="progress-percent">0%</div>
+                </div>
+
+                <div class="card progress-item animate-in">
+                    <div class="progress-header">
+                        <span class="emoji">👑</span> Phase 4: $5,000/month</span>
+                        <span class="progress-amount">$0 / $5,000</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill phase-4" data-progress="0"></div>
+                    </div>
+                    <div class="progress-percent">0%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Milestone Map -->
+        <section>
+            <h2 class="section-title">🗺️ Milestone Map</h2>
+            
+            <div class="card milestone animate-in">
+                <div class="milestone-header">
+                    <div class="milestone-title">
+                        <span class="phase-num">PHASE 1</span>
+                        🌱 First $100
+                    </div>
+                    <span class="status not-started">Not Started</span>
+                </div>
+                <div class="milestone-content">
+                    <div class="milestone-section">
+                        <h4>Goals</h4>
+                        <ul>
+                            <li>Validate your income idea with real sales</li>
+                            <li>Get first paying customer</li>
+                            <li>Build initial product/service foundation</li>
+                        </ul>
+                    </div>
+                    <div class="milestone-section">
+                        <h4>Action Items</h4>
+                        <ul>
+                            <li>Choose 1 income stream to focus on</li>
+                            <li>Create minimum viable offer</li>
+                            <li>Post in 3 relevant communities</li>
+                            <li>Get 1 sale within 7 days</li>
+                        </ul>
+                    </div>
+                    <div class="timeline">⏱️ Timeline: 1-2 weeks</div>
+                </div>
+            </div>
+
+            <div class="card milestone animate-in">
+                <div class="milestone-header">
+                    <div class="milestone-title">
+                        <span class="phase-num">PHASE 2</span>
+                        🚀 First $500
+                    </div>
+                    <span class="status not-started">Not Started</span>
+                </div>
+                <div class="milestone-content">
+                    <div class="milestone-section">
+                        <h4>Goals</h4>
+                        <ul>
+                            <li>Establish consistent sales rhythm</li>
+                            <li>Get 5+ customers</li>
+                            <li>Refine your offer based on feedback</li>
+                        </ul>
+                    </div>
+                    <div class="milestone-section">
+                        <h4>Action Items</h4>
+                        <ul>
+                            <li>Set up simple sales system</li>
+                            <li>Create 2-3 product tiers</li>
+                            <li>Launch affiliate or referral system</li>
+                            <li>Double down on what works</li>
+                        </ul>
+                    </div>
+                    <div class="timeline">⏱️ Timeline: 2-4 weeks</div>
+                </div>
+            </div>
+
+            <div class="card milestone animate-in">
+                <div class="milestone-header">
+                    <div class="milestone-title">
+                        <span class="phase-num">PHASE 3</span>
+                        💎 First $1,000
+                    </div>
+                    <span class="status not-started">Not Started</span>
+                </div>
+                <div class="milestone-content">
+                    <div class="milestone-section">
+                        <h4>Goals</h4>
+                        <ul>
+                            <li>Scale to consistent 3-figure months</li>
+                            <li>Build repeat customers</li>
+                            <li>Create passive income components</li>
+                        </ul>
+                    </div>
+                    <div class="milestone-section">
+                        <h4>Action Items</h4>
+                        <ul>
+                            <li>Automate delivery where possible</li>
+                            <li>Start building email list</li>
+                            <li>Launch a product or course</li>
+                            <li>Optimize pricing strategy</li>
+                        </ul>
+                    </div>
+                    <div class="timeline">⏱️ Timeline: 1-2 months</div>
+                </div>
+            </div>
+
+            <div class="card milestone animate-in">
+                <div class="milestone-header">
+                    <div class="milestone-title">
+                        <span class="phase-num">PHASE 4</span>
+                        👑 $5,000/Month
+                    </div>
+                    <span class="status not-started">Not Started</span>
+                </div>
+                <div class="milestone-content">
+                    <div class="milestone-section">
+                        <h4>Goals</h4>
+                        <ul>
+                            <li>Build true multi-stream income</li>
+                            <li>Achieve $5K+ monthly consistently</li>
+                            <li>Create systems that scale</li>
+                        </ul>
+                    </div>
+                    <div class="milestone-section">
+                        <h4>Action Items</h4>
+                        <ul>
+                            <li>Add 2-3 additional income streams</li>
+                            <li>Hire help or automate more</li>
+                            <li>Build team or leverage partnerships</li>
+                            <li>Scale successful channels 10x</li>
+                        </ul>
+                    </div>
+                    <div class="timeline">⏱️ Timeline: 3-6 months</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Steps -->
+        <section>
+            <h2 class="section-title">⚡ Next Steps</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.95rem;">
+                Start here. Right now. Today.
+            </p>
+            
+            <div class="next-steps-grid">
+                <div class="next-step">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <h4>Pick ONE Path</h4>
+                        <p>Choose: freelancing, digital products, affiliate marketing, or consulting</p>
+                    </div>
+                </div>
+                <div class="next-step">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <h4>Create Your Offer</h4>
+                        <p>Write down what you'll sell, for whom, and for how much</p>
+                    </div>
+                </div>
+                <div class="next-step">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <h4>Find First Customers</h4>
+                        <p>Post in communities, DM potential clients, or run small ads</p>
+                    </div>
+                </div>
+                <div class="next-step">
+                    <div class="step-num">4</div>
+                    <div class="step-content">
+                        <h4>Get That First Sale</h4>
+                        <p>Offer a discount if needed. Just get the first yes!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources -->
+        <section>
+            <h2 class="section-title">🧰 Resources</h2>
+            
+            <div class="resources-grid">
+                <a href="https://www.indiehackers.com" target="_blank" class="resource-card">
+                    <span class="resource-icon">🏢</span>
+                    <div class="resource-info">
+                        <h4>Indie Hackers</h4>
+                        <p>Build in public community</p>
+                    </div>
+                </a>
+                <a href="https:// Gumroad.com" target="_blank" class="resource-card">
+                    <span class="resource-icon">🛒</span>
+                    <div class="resource-info">
+                        <h4>Gumroad</h4>
+                        <p>Sell digital products</p>
+                    </div>
+                </a>
+                <a href="https://www.fiverr.com" target="_blank" class="resource-card">
+                    <span class="resource-icon">💼</span>
+                    <div class="resource-info">
+                        <h4>Fiverr</h4>
+                        <p>Freelance services</p>
+                    </div>
+                </a>
+                <a href="https://www.upwork.com" target="_blank" class="resource-card">
+                    <span class="resource-icon">📋</span>
+                    <div class="resource-info">
+                        <h4>Upwork</h4>
+                        <p>Professional freelancing</p>
+                    </div>
+                </a>
+                <a href="https:// Gumroad.com/pulse" target="_blank" class="resource-card">
+                    <span class="resource-icon">📖</span>
+                    <div class="resource-info">
+                        <h4>Gumroad Pulse</h4>
+                        <p>Creator earnings blog</p>
+                    </div>
+                </a>
+                <a href="https://www.stripe.com" target="_blank" class="resource-card">
+                    <span class="resource-icon">💳</span>
+                    <div class="resource-info">
+                        <h4>Stripe</h4>
+                        <p>Payment processing</p>
+                    </div>
+                </a>
+                <a href="https://convertkit.com" target="_blank" class="resource-card">
+                    <span class="resource-icon">📧</span>
+                    <div class="resource-info">
+                        <h4>ConvertKit</h4>
+                        <p>Email marketing</p>
+                    </div>
+                </a>
+                <a href="https://www.notion.so" target="_blank" class="resource-card">
+                    <span class="resource-icon">📝</span>
+                    <div class="resource-info">
+                        <h4>Notion</h4>
+                        <p>Productivity & planning</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <footer>
+            <p>Built with <span>❤️</span> for Andrew's success</p>
+        </footer>
+    </div>
+
+    <script>
+        // Animate progress bars on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.querySelectorAll('.progress-fill').forEach(bar => {
+                    const progress = bar.dataset.progress;
+                    bar.style.width = progress + '%';
+                    bar.parentElement.nextElementSibling.textContent = progress + '%';
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>
