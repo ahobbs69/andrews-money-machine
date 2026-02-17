@@ -2,41 +2,47 @@
 //  ClydeDashboardApp.swift
 //  ClydeDashboard
 //
-//  iOS Version - Simple Dashboard
+//  iOS Version - Fixed Scaling
 //
 
 import SwiftUI
 
-// MARK: - Simple Design System
+// MARK: - Design System
 struct GlassDesign {
     static let primary = Color(red: 0, green: 122/255, blue: 1)
     static let green = Color(red: 52/255, green: 199/255, blue: 89/255)
     static let red = Color(red: 1, green: 59/255, blue: 48/255)
     static let orange = Color(red: 1, green: 149/255, blue: 0)
     static let purple = Color(red: 88/255, green: 86/255, blue: 214/255)
-    
-    static let glassBackground = Color.gray.opacity(0.2)
 }
 
 struct ContentView: View {
-    @State private var selectedTab: Int = 0
+    @State private var selectedTab = 0
     
     var body: some View {
         TabView(selection: $selectedTab) {
             DashboardView()
-                .tabItem { Label("Dashboard", systemImage: "chart.bar.fill") }
+                .tabItem {
+                    Label("Dashboard", systemImage: "chart.bar.fill")
+                }
                 .tag(0)
             
             GainiumView()
-                .tabItem { Label("Gainium", systemImage: "arrow.triangle.branch") }
+                .tabItem {
+                    Label("Gainium", systemImage: "arrow.triangle.branch")
+                }
                 .tag(1)
             
             BotsView()
-                .tabItem { Label("Bots", systemImage: "brain") }
+                .tabItem {
+                    Label("Bots", systemImage: "brain")
+                }
                 .tag(2)
             
             SettingsView()
-                .tabItem { Label("Settings", systemImage: "gear") }
+                .tabItem {
+                    Label("Settings", systemImage: "gear")
+                }
                 .tag(3)
         }
         .tint(GlassDesign.primary)
@@ -46,43 +52,105 @@ struct ContentView: View {
 struct DashboardView: View {
     var body: some View {
         NavigationStack {
-            List {
-                Section("Trading") {
-                    HStack {
-                        Image(systemName: "chart.line.uptrend.xyaxis")
-                            .foregroundColor(.green)
-                        Text("P&L")
-                        Spacer()
+            ScrollView {
+                VStack(spacing: 20) {
+                    // P&L Card
+                    VStack(spacing: 8) {
+                        Text("Total P&L")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                         Text("+$601.28")
+                            .font(.system(size: 36, weight: .bold))
                             .foregroundColor(.green)
-                            .fontWeight(.bold)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .cornerRadius(16)
+                    .shadow(radius: 2)
+                    
+                    // Stats Grid
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                        StatCard(title: "Active Bots", value: "3", icon: "brain", color: .blue)
+                        StatCard(title: "Bankroll Used", value: "59%", icon: "banknote", color: .orange)
                     }
                     
-                    HStack {
-                        Image(systemName: "dollarsign.circle")
-                        Text("Active Bots")
-                        Spacer()
-                        Text("3")
-                    }
-                    
-                    HStack {
-                        Image(systemName: "banknote")
-                        Text("Bankroll Used")
-                        Spacer()
-                        Text("59%")
+                    // Market Section
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Market")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        
+                        VStack(spacing: 0) {
+                            MarketRow(coin: "BTC", price: "$68,377", change: "+2.1%")
+                            Divider()
+                            MarketRow(coin: "ETH", price: "$1,985", change: "+1.3%")
+                            Divider()
+                            MarketRow(coin: "SOL", price: "$86", change: "+0.8%")
+                            Divider()
+                            MarketRow(coin: "SPY", price: "$681.75", change: "-0.2%")
+                            Divider()
+                            MarketRow(coin: "TSLA", price: "$417.44", change: "-1.1%")
+                        }
+                        .background(Color(.systemBackground))
+                        .cornerRadius(12)
                     }
                 }
-                
-                Section("Market") {
-                    HStack { Text("BTC"); Spacer(); Text("$68,377") }
-                    HStack { Text("ETH"); Spacer(); Text("$1,985") }
-                    HStack { Text("SOL"); Spacer(); Text("$86") }
-                    HStack { Text("SPY"); Spacer(); Text("$681.75") }
-                    HStack { Text("TSLA"); Spacer(); Text("$417.44") }
-                }
+                .padding()
             }
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("Clyde Dashboard")
         }
+    }
+}
+
+struct StatCard: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(color)
+            Text(value)
+                .font(.title2)
+                .fontWeight(.bold)
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .shadow(radius: 2)
+    }
+}
+
+struct MarketRow: View {
+    let coin: String
+    let price: String
+    let change: String
+    
+    var body: some View {
+        HStack {
+            Text(coin)
+                .font(.headline)
+            Spacer()
+            Text(price)
+                .font(.subheadline)
+            Text(change)
+                .font(.caption)
+                .foregroundColor(change.hasPrefix("+") ? .green : .red)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background((change.hasPrefix("+") ? Color.green : Color.red).opacity(0.1))
+                .cornerRadius(8)
+        }
+        .padding()
     }
 }
 
@@ -90,34 +158,57 @@ struct GainiumView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("Bots") {
-                    BotRow(name: "Moccasin Tortoise", pair: "WLFI/USDC", pnl: "+$210.51", status: "Active")
-                    BotRow(name: "Bronze Crane", pair: "PENDLE", pnl: "+$146.36", status: "Closed")
-                    BotRow(name: "Green Chickadee", pair: "CVX", pnl: "+$244.41", status: "Error")
-                }
+                BotCard(name: "Moccasin Tortoise", pair: "WLFI/USDC", pnl: "+$210.51", status: "Active")
+                BotCard(name: "Bronze Crane", pair: "PENDLE", pnl: "+$146.36", status: "Closed")
+                BotCard(name: "Green Chickadee", pair: "CVX", pnl: "+$244.41", status: "Error")
             }
             .navigationTitle("Gainium Bots")
         }
     }
 }
 
-struct BotRow: View {
+struct BotCard: View {
     let name: String
     let pair: String
     let pnl: String
     let status: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(name).font(.headline)
-            Text(pair).font(.caption).foregroundColor(.gray)
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text(pnl).foregroundColor(.green)
+                Text(name)
+                    .font(.headline)
                 Spacer()
-                Text(status).font(.caption).padding(.horizontal, 8).background(status == "Error" ? Color.red.opacity(0.2) : Color.green.opacity(0.2)).cornerRadius(4)
+                Text(status)
+                    .font(.caption)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(statusColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+            
+            HStack {
+                Text(pair)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                Spacer()
+                Text(pnl)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundColor(.green)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 8)
+    }
+    
+    var statusColor: Color {
+        switch status {
+        case "Active": return .green
+        case "Closed": return .blue
+        case "Error": return .red
+        default: return .gray
+        }
     }
 }
 
@@ -126,16 +217,28 @@ struct BotsView: View {
         NavigationStack {
             List {
                 Section("Trading") {
-                    NavigationLink("Gainium Bots") { GainiumView() }
-                    NavigationLink("Paper Trading") { Text("Paper Trading") }
+                    NavigationLink {
+                        GainiumView()
+                    } label: {
+                        Label("Gainium Bots", systemImage: "arrow.triangle.branch")
+                    }
+                    
+                    NavigationLink {
+                        Text("Paper Trading")
+                    } label: {
+                        Label("Paper Trading", systemImage: "doc.text")
+                    }
                 }
                 
                 Section("Research") {
-                    NavigationLink("Fragrance ROI") { Text("Fragrance Analysis") }
-                    NavigationLink("eBay Research") { Text("eBay Data") }
+                    NavigationLink {
+                        Text("Fragrance ROI")
+                    } label: {
+                        Label("Fragrance ROI", systemImage: "flame")
+                    }
                 }
             }
-            .navigationTitle("Bots & Research")
+            .navigationTitle("Bots")
         }
     }
 }
@@ -147,12 +250,27 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
-                Toggle("Notifications", isOn: $notifications)
-                Toggle("Auto Refresh", isOn: $autoRefresh)
+                Toggle(isOn: $notifications) {
+                    Label("Notifications", systemImage: "bell")
+                }
                 
-                Section("About") {
-                    HStack { Text("Version"); Spacer(); Text("1.0.0") }
-                    HStack { Text("Clyde"); Spacer(); Text("🐙") }
+                Toggle(isOn: $autoRefresh) {
+                    Label("Auto Refresh", systemImage: "arrow.clockwise")
+                }
+                
+                Section("Info") {
+                    HStack {
+                        Text("Version")
+                        Spacer()
+                        Text("1.0.0")
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    HStack {
+                        Text("Clyde")
+                        Spacer()
+                        Text("🐙")
+                    }
                 }
             }
             .navigationTitle("Settings")
