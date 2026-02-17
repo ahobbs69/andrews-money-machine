@@ -16,6 +16,18 @@
     "moltguard": {
       "version": "6.0.2",
       "installedAt": 1771323130427
+    },
+    "ios": {
+      "version": "1.0.0",
+      "installedAt": 1771327408860
+    },
+    "ios-simulator": {
+      "version": "0.1.2",
+      "installedAt": 1771327424474
+    },
+    "xcode": {
+      "version": "1.0.0",
+      "installedAt": 1771327441932
     }
   }
 }
