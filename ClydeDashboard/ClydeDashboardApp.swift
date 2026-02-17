@@ -2,184 +2,163 @@
 //  ClydeDashboardApp.swift
 //  ClydeDashboard
 //
-//  iOS Version - Fixed for iPhone
+//  Simple working version
 //
 
 import SwiftUI
 
+@main
 struct ClydeDashboardApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .ignoresSafeArea(edges: .top)
         }
     }
 }
 
 struct ContentView: View {
-    @State private var selectedTab = 0
-    
     var body: some View {
-        TabView(selection: $selectedTab) {
-            DashboardView()
-                .tabItem {
-                    Label("Dashboard", systemImage: "chart.bar.fill")
-                }
-                .tag(0)
+        TabView {
+            DashboardTab()
+                .tabItem { Label("Home", systemImage: "house") }
             
-            GainiumView()
-                .tabItem {
-                    Label("Gainium", systemImage: "arrow.triangle.branch")
-                }
-                .tag(1)
+            GainiumTab()
+                .tabItem { Label("Gainium", systemImage: "chart.line.uptrend.xyaxis") }
             
-            BotsView()
-                .tabItem {
-                    Label("Bots", systemImage: "brain")
-                }
-                .tag(2)
+            BotsTab()
+                .tabItem { Label("Bots", systemImage: "brain") }
             
-            SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: "gear")
-                }
-                .tag(3)
+            SettingsTab()
+                .tabItem { Label("Settings", systemImage: "gear") }
         }
-        .tint(.blue)
     }
 }
 
-struct DashboardView: View {
+struct DashboardTab: View {
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    // P&L Card
-                    VStack(spacing: 8) {
-                        Text("Total P&L")
-                            .font(.title3)
-                            .foregroundColor(.secondary)
-                        Text("+$601.28")
-                            .font(.system(size: 44, weight: .bold))
-                            .foregroundColor(.green)
+            VStack(spacing: 20) {
+                VStack {
+                    Text("Total P&L")
+                        .font(.title3)
+                        .foregroundColor(.secondary)
+                    Text("+$601.28")
+                        .font(.system(size: 50, weight: .bold))
+                        .foregroundColor(.green)
+                }
+                .padding(30)
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(20)
+                
+                HStack(spacing: 20) {
+                    VStack {
+                        Image(systemName: "brain")
+                            .font(.largeTitle)
+                        Text("3")
+                            .font(.title)
+                        Text("Bots")
+                            .font(.caption)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(30)
-                    .background(Color(.systemBackground))
-                    .cornerRadius(20)
-                    .shadow(radius: 4)
+                    .padding(20)
+                    .background(Color.blue.opacity(0.1))
+                    .cornerRadius(15)
                     
-                    // Stats Grid
-                    HStack(spacing: 16) {
-                        StatCard(title: "Active Bots", value: "3", icon: "brain", color: .blue)
-                        StatCard(title: "Bankroll", value: "59%", icon: "banknote", color: .orange)
+                    VStack {
+                        Image(systemName: "banknote")
+                            .font(.largeTitle)
+                        Text("59%")
+                            .font(.title)
+                        Text("Used")
+                            .font(.caption)
                     }
-                    
-                    // Market Section
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Market")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .padding(.horizontal)
-                        
-                        VStack(spacing: 0) {
-                            MarketRow(coin: "BTC", price: "$68,377", change: "+2.1%")
-                            Divider()
-                            MarketRow(coin: "ETH", price: "$1,985", change: "+1.3%")
-                            Divider()
-                            MarketRow(coin: "SOL", price: "$86", change: "+0.8%")
-                            Divider()
-                            MarketRow(coin: "SPY", price: "$681.75", change: "-0.2%")
-                            Divider()
-                            MarketRow(coin: "TSLA", price: "$417.44", change: "-1.1%")
-                        }
-                        .background(Color(.systemBackground))
-                        .cornerRadius(16)
-                        .padding(.horizontal)
-                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(20)
+                    .background(Color.orange.opacity(0.1))
+                    .cornerRadius(15)
                 }
-                .padding(.top, 20)
+                
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Market")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    MarketRow(coin: "BTC", price: "$68,377", up: true)
+                    MarketRow(coin: "ETH", price: "$1,985", up: true)
+                    MarketRow(coin: "SOL", price: "$86", up: true)
+                    MarketRow(coin: "SPY", price: "$681.75", up: false)
+                    MarketRow(coin: "TSLA", price: "$417.44", up: false)
+                }
+                .padding()
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(15)
+                
+                Spacer()
             }
-            .background(Color(.systemGroupedBackground))
+            .padding()
             .navigationTitle("Clyde")
         }
-    }
-}
-
-struct StatCard: View {
-    let title: String
-    let value: String
-    let icon: String
-    let color: Color
-    
-    var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.title)
-                .foregroundColor(color)
-            Text(value)
-                .font(.title)
-                .fontWeight(.bold)
-            Text(title)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(20)
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(radius: 2)
     }
 }
 
 struct MarketRow: View {
     let coin: String
     let price: String
-    let change: String
-    
-    var isPositive: Bool {
-        change.hasPrefix("+")
-    }
+    let up: Bool
     
     var body: some View {
         HStack {
             Text(coin)
-                .font(.title3)
-                .fontWeight(.semibold)
+                .font(.headline)
             Spacer()
             Text(price)
-                .font(.title3)
-            Text(change)
                 .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(isPositive ? .green : .red)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(isPositive ? Color.green.opacity(0.15) : Color.red.opacity(0.15))
-                .cornerRadius(10)
+            Image(systemName: up ? "arrow.up.right" : "arrow.down.right")
+                .foregroundColor(up ? .green : .red)
         }
-        .padding(20)
     }
 }
 
-struct GainiumView: View {
+struct GainiumTab: View {
     var body: some View {
         NavigationStack {
             List {
-                BotCard(name: "Moccasin Tortoise", pair: "WLFI/USDC", pnl: "+$210.51", status: "Active")
-                BotCard(name: "Bronze Crane", pair: "PENDLE", pnl: "+$146.36", status: "Closed")
-                BotCard(name: "Green Chickadee", pair: "CVX", pnl: "+$244.41", status: "Error")
+                BotRow(name: "Moccasin Tortoise", pair: "WLFI/USDC", pnl: "+$210.51", status: "Active")
+                BotRow(name: "Bronze Crane", pair: "PENDLE", pnl: "+$146.36", status: "Closed")
+                BotRow(name: "Green Chickadee", pair: "CVX", pnl: "+$244.41", status: "Error")
             }
-            .navigationTitle("Gainium Bots")
+            .navigationTitle("Gainium")
         }
     }
 }
 
-struct BotCard: View {
+struct BotRow: View {
     let name: String
     let pair: String
     let pnl: String
     let status: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(name).font(.headline)
+                Spacer()
+                Text(status)
+                    .font(.caption)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(statusColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+            HStack {
+                Text(pair).foregroundColor(.secondary)
+                Spacer()
+                Text(pnl).font(.title3).fontWeight(.bold).foregroundColor(.green)
+            }
+        }
+        .padding(.vertical, 5)
+    }
     
     var statusColor: Color {
         switch status {
@@ -189,62 +168,19 @@ struct BotCard: View {
         default: return .gray
         }
     }
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(name)
-                    .font(.headline)
-                Spacer()
-                Text(status)
-                    .font(.subheadline)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(statusColor)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            
-            HStack {
-                Text(pair)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                Spacer()
-                Text(pnl)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.green)
-            }
-        }
-        .padding(.vertical, 12)
-        .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-    }
 }
 
-struct BotsView: View {
+struct BotsTab: View {
     var body: some View {
         NavigationStack {
             List {
                 Section("Trading") {
-                    NavigationLink {
-                        GainiumView()
-                    } label: {
-                        Label("Gainium Bots", systemImage: "arrow.triangle.branch")
-                    }
-                    
-                    NavigationLink {
-                        Text("Paper Trading")
-                    } label: {
-                        Label("Paper Trading", systemImage: "doc.text")
-                    }
+                    Label("Gainium Bots", systemImage: "chart.line.uptrend.xyaxis")
+                    Label("Paper Trading", systemImage: "doc.text")
                 }
-                
                 Section("Research") {
-                    NavigationLink {
-                        Text("Fragrance ROI")
-                    } label: {
-                        Label("Fragrance ROI", systemImage: "flame")
-                    }
+                    Label("Fragrance ROI", systemImage: "flame")
+                    Label("eBay Data", systemImage: "magnifyingglass")
                 }
             }
             .navigationTitle("Bots")
@@ -252,34 +188,16 @@ struct BotsView: View {
     }
 }
 
-struct SettingsView: View {
-    @State private var notifications = true
-    @State private var autoRefresh = true
-    
+struct SettingsTab: View {
     var body: some View {
         NavigationStack {
             List {
-                Toggle(isOn: $notifications) {
-                    Label("Notifications", systemImage: "bell")
-                }
+                Toggle("Notifications", isOn: .constant(true))
+                Toggle("Auto Refresh", isOn: .constant(true))
                 
-                Toggle(isOn: $autoRefresh) {
-                    Label("Auto Refresh", systemImage: "arrow.clockwise")
-                }
-                
-                Section("Info") {
-                    HStack {
-                        Text("Version")
-                        Spacer()
-                        Text("1.0.0")
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    HStack {
-                        Text("Clyde")
-                        Spacer()
-                        Text("🐙")
-                    }
+                Section("About") {
+                    HStack { Text("Version"); Spacer(); Text("1.0.0") }
+                    HStack { Text("Clyde"); Spacer(); Text("🐙") }
                 }
             }
             .navigationTitle("Settings")
