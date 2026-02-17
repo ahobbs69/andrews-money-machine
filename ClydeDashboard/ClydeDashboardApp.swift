@@ -2,18 +2,18 @@
 //  ClydeDashboardApp.swift
 //  ClydeDashboard
 //
-//  iOS Version - Fixed Scaling
+//  iOS Version - Fixed for iPhone
 //
 
 import SwiftUI
 
-// MARK: - Design System
-struct GlassDesign {
-    static let primary = Color(red: 0, green: 122/255, blue: 1)
-    static let green = Color(red: 52/255, green: 199/255, blue: 89/255)
-    static let red = Color(red: 1, green: 59/255, blue: 48/255)
-    static let orange = Color(red: 1, green: 149/255, blue: 0)
-    static let purple = Color(red: 88/255, green: 86/255, blue: 214/255)
+struct ClydeDashboardApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .ignoresSafeArea(edges: .top)
+        }
+    }
 }
 
 struct ContentView: View {
@@ -45,7 +45,7 @@ struct ContentView: View {
                 }
                 .tag(3)
         }
-        .tint(GlassDesign.primary)
+        .tint(.blue)
     }
 }
 
@@ -57,28 +57,29 @@ struct DashboardView: View {
                     // P&L Card
                     VStack(spacing: 8) {
                         Text("Total P&L")
-                            .font(.subheadline)
+                            .font(.title3)
                             .foregroundColor(.secondary)
                         Text("+$601.28")
-                            .font(.system(size: 36, weight: .bold))
+                            .font(.system(size: 44, weight: .bold))
                             .foregroundColor(.green)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding()
+                    .padding(30)
                     .background(Color(.systemBackground))
-                    .cornerRadius(16)
-                    .shadow(radius: 2)
+                    .cornerRadius(20)
+                    .shadow(radius: 4)
                     
                     // Stats Grid
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                    HStack(spacing: 16) {
                         StatCard(title: "Active Bots", value: "3", icon: "brain", color: .blue)
-                        StatCard(title: "Bankroll Used", value: "59%", icon: "banknote", color: .orange)
+                        StatCard(title: "Bankroll", value: "59%", icon: "banknote", color: .orange)
                     }
                     
                     // Market Section
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Market")
-                            .font(.headline)
+                            .font(.title2)
+                            .fontWeight(.bold)
                             .padding(.horizontal)
                         
                         VStack(spacing: 0) {
@@ -93,13 +94,14 @@ struct DashboardView: View {
                             MarketRow(coin: "TSLA", price: "$417.44", change: "-1.1%")
                         }
                         .background(Color(.systemBackground))
-                        .cornerRadius(12)
+                        .cornerRadius(16)
+                        .padding(.horizontal)
                     }
                 }
-                .padding()
+                .padding(.top, 20)
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle("Clyde Dashboard")
+            .navigationTitle("Clyde")
         }
     }
 }
@@ -111,21 +113,21 @@ struct StatCard: View {
     let color: Color
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 12) {
             Image(systemName: icon)
-                .font(.title2)
+                .font(.title)
                 .foregroundColor(color)
             Text(value)
-                .font(.title2)
+                .font(.title)
                 .fontWeight(.bold)
             Text(title)
-                .font(.caption)
+                .font(.subheadline)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding()
+        .padding(20)
         .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .cornerRadius(16)
         .shadow(radius: 2)
     }
 }
@@ -135,22 +137,28 @@ struct MarketRow: View {
     let price: String
     let change: String
     
+    var isPositive: Bool {
+        change.hasPrefix("+")
+    }
+    
     var body: some View {
         HStack {
             Text(coin)
-                .font(.headline)
+                .font(.title3)
+                .fontWeight(.semibold)
             Spacer()
             Text(price)
-                .font(.subheadline)
+                .font(.title3)
             Text(change)
-                .font(.caption)
-                .foregroundColor(change.hasPrefix("+") ? .green : .red)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background((change.hasPrefix("+") ? Color.green : Color.red).opacity(0.1))
-                .cornerRadius(8)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundColor(isPositive ? .green : .red)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(isPositive ? Color.green.opacity(0.15) : Color.red.opacity(0.15))
+                .cornerRadius(10)
         }
-        .padding()
+        .padding(20)
     }
 }
 
@@ -173,19 +181,28 @@ struct BotCard: View {
     let pnl: String
     let status: String
     
+    var statusColor: Color {
+        switch status {
+        case "Active": return .green
+        case "Closed": return .blue
+        case "Error": return .red
+        default: return .gray
+        }
+    }
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text(name)
                     .font(.headline)
                 Spacer()
                 Text(status)
-                    .font(.caption)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
+                    .font(.subheadline)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
                     .background(statusColor)
                     .foregroundColor(.white)
-                    .cornerRadius(8)
+                    .cornerRadius(10)
             }
             
             HStack {
@@ -194,21 +211,13 @@ struct BotCard: View {
                     .foregroundColor(.secondary)
                 Spacer()
                 Text(pnl)
-                    .font(.title3)
+                    .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(.green)
             }
         }
-        .padding(.vertical, 8)
-    }
-    
-    var statusColor: Color {
-        switch status {
-        case "Active": return .green
-        case "Closed": return .blue
-        case "Error": return .red
-        default: return .gray
-        }
+        .padding(.vertical, 12)
+        .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
     }
 }
 
@@ -274,15 +283,6 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
-        }
-    }
-}
-
-@main
-struct ClydeDashboardApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
         }
     }
 }
