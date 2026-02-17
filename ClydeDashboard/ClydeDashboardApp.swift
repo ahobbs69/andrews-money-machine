@@ -2,7 +2,7 @@
 //  ClydeDashboardApp.swift
 //  ClydeDashboard
 //
-//  Liquid Glass Design - Fixed Bottom Safe Area
+//  Liquid Glass Design - PROPER Safe Area Fix
 //
 
 import SwiftUI
@@ -18,33 +18,30 @@ struct ClydeDashboardApp: App {
 
 struct ContentView: View {
     var body: some View {
-        ZStack {
-            // Background
-            LinearGradient(
-                colors: [Color.purple.opacity(0.5), Color.blue.opacity(0.4), Color.cyan.opacity(0.3)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-            
-            VStack(spacing: 0) {
-                // Header
-                VStack(spacing: 4) {
-                    Text("Clyde")
-                        .font(.system(size: 44, weight: .bold))
-                        .foregroundStyle(.white)
-                    Text("Dashboard")
-                        .font(.system(size: 20, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.8))
-                }
-                .padding(.top, 60)
-                .padding(.bottom, 20)
-                .frame(maxWidth: .infinity)
-                .background(.ultraThinMaterial)
+        NavigationStack {
+            ZStack {
+                // Background - goes edge to edge
+                LinearGradient(
+                    colors: [Color.purple.opacity(0.5), Color.blue.opacity(0.4), Color.cyan.opacity(0.3)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
                 
-                // Scroll Content
                 ScrollView {
                     VStack(spacing: 25) {
+                        // Header
+                        VStack(spacing: 4) {
+                            Text("Clyde")
+                                .font(.system(size: 44, weight: .bold))
+                                .foregroundStyle(.white)
+                            Text("Dashboard")
+                                .font(.system(size: 20, weight: .medium))
+                                .foregroundStyle(.white.opacity(0.8))
+                        }
+                        .padding(.top, 20)
+                        .padding(.bottom, 20)
+                        
                         // P&L Card
                         VStack(spacing: 10) {
                             Text("Total P&L")
@@ -151,15 +148,17 @@ struct ContentView: View {
                             }
                         }
                         .padding(.horizontal)
+                        
+                        // Bottom padding for home indicator - USE THIS NOT safeAreaInset
+                        Rectangle()
+                            .fill(.clear)
+                            .frame(height: 50)
                     }
-                    .padding(.top, 20)
-                    .padding(.bottom, 50)
+                    .padding(.top, 10)
                 }
-                .safeAreaInset(edge: .bottom) {
-                    // Empty view to properly inset content from home indicator
-                    Color.clear.frame(height: 1)
-                }
+                .scrollContentBackground(.hidden)
             }
+            .navigationBarHidden(true)
         }
     }
 }
