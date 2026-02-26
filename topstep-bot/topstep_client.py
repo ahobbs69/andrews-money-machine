@@ -134,14 +134,14 @@ class TopstepClient:
     # --- Contracts ---
 
     def _discover_contract(self):
-        """Find a tradable contract for TARGET_SYMBOL_ID.
+        """Find a tradable contract for TARGET_SYMBOL_ID using sim (live=False).
 
         Tries /Contract/available first, then /Contract/search.
         If still nothing, falls back to the first active contract in available.
         """
-        # 1) Try Contract/available
+        # 1) Try Contract/available with live=False (sim data)
         url = f"{self.base_url}/Contract/available"
-        payload = {"live": True}
+        payload = {"live": False}
         resp = self.session.post(url, json=payload)
         data = self._handle_response(resp)
 
@@ -161,10 +161,9 @@ class TopstepClient:
 
         # 2) If still nothing, try Contract/search with searchText from TARGET_SYMBOL_ID
         if not chosen_id:
-            # derive a short search text (e.g. MES from F.US.MES)
             search_text = TARGET_SYMBOL_ID.split(".")[-1]
             url = f"{self.base_url}/Contract/search"
-            payload = {"live": True, "searchText": search_text}
+            payload = {"live": False, "searchText": search_text}
             resp = self.session.post(url, json=payload)
             data = self._handle_response(resp)
             if data.get("success") and data.get("errorCode") in (0, None):
@@ -197,7 +196,7 @@ class TopstepClient:
 
         payload = {
             "contractId": self.contract_id,
-            "live": True,
+            "live": False,  # use sim/historical feed
             "startTime": start_time.isoformat().replace("+00:00", "Z"),
             "endTime": end_time.isoformat().replace("+00:00", "Z"),
             "unit": unit,
