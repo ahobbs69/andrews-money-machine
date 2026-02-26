@@ -12,7 +12,7 @@ load_dotenv()
 SYMBOL = os.getenv("SYMBOL", "MES")
 MODE = os.getenv("MODE", "paper")  # 'paper' or 'live'
 
-POLL_SECONDS = 10  # how often to check / generate signals
+POLL_SECONDS = 30  # how often to check / generate signals
 
 
 def log(msg: str):
@@ -22,29 +22,54 @@ def log(msg: str):
 def main():
     client = TopstepClient()
     risk = RiskManager()
-    strat = BreakoutStrategy(symbol=SYMBOL, base_size=1)
+    # 1 contract base size for MES for now
+    strat = BreakoutStrategy(symbol=SYMBOL, base_size=1, lookback=30, buffer_ticks=0.5)
 
     log(f"Starting bot in MODE={MODE}, SYMBOL={SYMBOL}")
+    log("Initialized Topstep client, account, and MES contract.")
 
     while True:
         try:
-            # 1) Pull account info (incl. realized PnL)
+            # 1) Account info – we currently just fetch it to confirm canTrade
             account = client.get_account_info()
-            # You'll need to adjust these keys based on actual TopstepX response
-            realized_pnl = float(account.get("realized_pnl_today", 0.0))
-            risk.update_realized_pnl(realized_pnl)
-
-            if not risk.can_trade_today():
-                log(f"Daily loss limit hit (PnL={realized_pnl}). No more trading today.")
+            if not account:
+                log("No account info returned; skipping loop.")
                 time.sleep(POLL_SECONDS)
                 continue
 
-            # 2) Pull market data (placeholder  depends on TopstepX API)
-            # For now we'll stub this as an empty dict
-            market_data = {}
+            can_trade = bool(account.get("canTrade", False))
+            balance = account.get("balance")
+            log(f"Account {account.get('name')} (id={account.get('id')}) balance={balance}, canTrade={can_trade}")
+
+            if not can_trade:
+                log("Account not tradable (canTrade=false). Skipping.")
+                time.sleep(POLL_SECONDS)
+                continue
+
+            # NOTE: We don't yet have realized PnL field from API; for now,
+            # RiskManager uses its default (0). We'll tighten this once we
+            # wire in PnL via Order/search or a dedicated endpoint.
+
+            if not risk.can_trade_today():
+                log("Daily loss limit flag triggered. No more trading today.")
+                time.sleep(POLL_SECONDS)
+                continue
+
+            # 2) Fetch recent MES bars
+            try:
+                bars = client.get_recent_bars(limit=60, unit=2, unit_number=1)
+            except Exception as e:
+                log(f"Error fetching bars: {e}")
+                time.sleep(POLL_SECONDS)
+                continue
+
+            if not bars:
+                log("No bars returned; skipping.")
+                time.sleep(POLL_SECONDS)
+                continue
 
             # 3) Strategy decides if there's a trade
-            signal = strat.evaluate(market_data)
+            signal = strat.evaluate(bars)
 
             if signal is None:
                 log("No signal.")
@@ -57,20 +82,25 @@ def main():
                 time.sleep(POLL_SECONDS)
                 continue
 
-            log(f"Signal: {signal.side} {signal.quantity}x {SYMBOL} ({signal.reason})")
+            log(f"Signal: {signal.side.upper()} {signal.quantity}x {SYMBOL} ({signal.reason})")
 
             if MODE == "paper":
                 # Log only, no live orders
-                log("MODE=paper  not sending real order.")
+                log("MODE=paper → not sending real order. This is a dry-run signal.")
             else:
-                # Live order
-                resp = client.place_order(
-                    symbol=SYMBOL,
-                    side=signal.side,
-                    quantity=signal.quantity,
-                    order_type="market",
-                )
-                log(f"Order placed: {resp}")
+                # Live order: place market order with conservative brackets
+                # For MES, 10 ticks stop, 20 ticks TP as a starting point
+                try:
+                    resp = client.place_market_order_with_brackets(
+                        side=signal.side,
+                        size=signal.quantity,
+                        stop_ticks=10,
+                        take_profit_ticks=20,
+                        custom_tag=f"ClydeMES-{datetime.utcnow().isoformat(timespec='seconds')}",
+                    )
+                    log(f"Order placed: {resp}")
+                except Exception as e:
+                    log(f"Error placing order: {e}")
 
         except Exception as e:
             log(f"Error in main loop: {e}")
